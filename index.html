@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assests/css/style.css">
+    <title>To Do List </title>
+</head>
+<body>
+   <div class="todo">
+    <div class="to-do-img">
+        <p>To Do List</p>
+      <img src="./assests/To-Do-Img/images/icon.png" alt="" />
+    </div>
+
+    <!-- FIXED: class name changed to single word (no spaces) -->
+    <div class="todo-input">
+      <input type="text" placeholder="Enter Item" id="todo-input" />
+      <button id="add-btn">Add</button>
+    </div>
+ 
+
+  <!-- FIXED: class name corrected -->
+  <div class="todo-list">
+    <ul></ul>
+  </div>
+   </div>
+
+
+ 
+      <script>
+  const input = document.querySelector("#todo-input");
+  const addBtn = document.querySelector("#add-btn");
+  const ul = document.querySelector(".todo-list ul");
+
+  // 🔁 Load saved items on page load
+  window.addEventListener("DOMContentLoaded", function () {
+    const savedItems = JSON.parse(localStorage.getItem("todoItems")) || [];
+    savedItems.forEach(text => {
+      addItem(text);
+    });
+  });
+
+  // ➕ Add button click handler
+  addBtn.addEventListener("click", function () {
+    const itemText = input.value.trim();
+     if (itemText === "") {
+    alert("Please enter an item");
+    return; // Stop the function here
+  }
+
+  addItem(itemText);
+  saveToLocalStorage(itemText);
+  input.value = "";
+});
+
+  // 🔄 Function to add item to DOM
+
+  function addItem(text) {
+    const li = document.createElement("li");
+    li.textContent = text;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "❌";
+    delBtn.classList.add("delete-btn");
+
+    delBtn.addEventListener("click", function () {
+      li.remove();
+      removeFromLocalStorage(text);
+    });
+
+    li.appendChild(delBtn);
+    ul.appendChild(li);
+  }
+
+  // 💾 Save to localStorage
+  function saveToLocalStorage(item) {
+    const items = JSON.parse(localStorage.getItem("todoItems")) || [];
+    items.push(item);
+    localStorage.setItem("todoItems", JSON.stringify(items));
+  }
+
+  // ❌ Remove from localStorage
+  function removeFromLocalStorage(item) {
+    let items = JSON.parse(localStorage.getItem("todoItems")) || [];
+    items = items.filter(i => i !== item);
+    localStorage.setItem("todoItems", JSON.stringify(items));
+  }
+// ⌨️ Enter key press handler on input
+input.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    const itemText = input.value.trim();
+    if (itemText === "") {
+      alert("Please enter an item");
+      return;
+    }
+
+    addItem(itemText);
+    saveToLocalStorage(itemText);
+    input.value = "";
+  }
+});
+
+
+    </script>
+</body>
+</html>
